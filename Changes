@@ -1,0 +1,7 @@
+Revision history for MooseX-Types-Moose-Overload
+
+0.02    Added MooseX::Types as a requirement
+
+0.01    Dec 15, 2008
+        First version, released on an unsuspecting world.
+

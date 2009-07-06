@@ -1,0 +1,25 @@
+---
+abstract: 'Deal with overload, in the overloaded sense ;)'
+author:
+  - 'Evan Carroll <me@evancarroll.com>'
+build_requires:
+  Test::More: 0
+distribution_type: module
+generated_by: 'Module::Install version 0.77'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: MooseX-Types-Moose-Overload
+no_index:
+  directory:
+    - inc
+    - t
+requires:
+  Moose: 0
+  MooseX::Types: 0
+  overload: 0
+  perl: 5.01
+resources:
+  license: http://dev.perl.org/licenses/
+version: 0.01_02
