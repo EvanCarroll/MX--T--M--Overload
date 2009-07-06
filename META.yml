@@ -3,9 +3,12 @@ abstract: 'Deal with overload, in the overloaded sense ;)'
 author:
   - 'Evan Carroll <me@evancarroll.com>'
 build_requires:
+  ExtUtils::MakeMaker: 6.42
   Test::More: 0
+configure_requires:
+  ExtUtils::MakeMaker: 6.42
 distribution_type: module
-generated_by: 'Module::Install version 0.77'
+generated_by: 'Module::Install version 0.91'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -19,7 +22,9 @@ requires:
   Moose: 0
   MooseX::Types: 0
   overload: 0
-  perl: 5.01
+  perl: 5.8.0
 resources:
+  homepage: http://github.com/EvanCarroll/MX--T--M--Overload
   license: http://dev.perl.org/licenses/
-version: 0.01_02
+  repository: git://github.com/EvanCarroll/MX--T--M--Overload.git
+version: 0.01_05
