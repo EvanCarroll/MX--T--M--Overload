@@ -1,5 +1,6 @@
 .*.old$
 .*.swp$
+Makefile
 MANIFEST.bak
 .gitignore$
 .git/*
