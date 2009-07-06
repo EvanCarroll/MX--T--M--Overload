@@ -1,5 +1,10 @@
 Revision history for MooseX-Types-Moose-Overload
 
+0.03    July 6, 2009
+        We now work in a more MooseX::Types fashion. Please see
+        the section on future proofing. Much of the current behavoir
+        is viewed as a side-effect of not cloning MXT:Moose's types.
+
 0.02    Added MooseX::Types as a requirement
 
 0.01    Dec 15, 2008

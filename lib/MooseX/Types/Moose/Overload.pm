@@ -1,34 +1,34 @@
 package MooseX::Types::Moose::Overload;
-use 5.010;
+use strict;
+use warnings;
 
-use base 'MooseX::Types::Moose';
-
-use mro 'c3';
 use overload;
 
-our $VERSION = '0.01_02';
+our $VERSION = '0.01_05';
 
-## {
-## 	Str => :ltrim, :rtrim:, :trim, :multispace
-## 	Bool => :string  y/n t/f
-## }
+use Moose::Util::TypeConstraints;
+use MooseX::Types;
 
-sub _unOverload {
+my @types;
+BEGIN {
+	@types = grep Moose::Util::TypeConstraints::find_type_constraint( $_ )->is_subtype_of( 'Value' )
+		, Moose::Util::TypeConstraints->list_all_builtin_type_constraints
+	;
+}
+
+use Sub::Exporter -setup => { exports => \@types };
+## We need Object too, it isn't a subtype of Value
+use MooseX::Types::Moose (@types, 'Object');
+
+sub unOverload {
 	overload::Overloaded( $_[0] ) && overload::Method( $_[0], '""' )
 	? "$_[0]"
 	: $_[0]
 }
 
-for my $name ( Moose::Util::TypeConstraints->list_all_builtin_type_constraints ) {
-	my $constraint = Moose::Util::TypeConstraints::find_type_constraint( $name );
-
-	if ( $constraint->is_subtype_of( 'Value' ) ) {
-		Moose::Util::TypeConstraints::_install_type_coercions(
-			$name
-			, [ Object => \&_unOverload ] ## From any overloaded objects
-		);
-	}
-
+my $p = Class::MOP::Package->initialize( __PACKAGE__ );
+for ( @types ) {
+	coerce $p->get_package_symbol( "&$_" )->() , from Object , via \&unOverload;
 }
 
 no MooseX::Types;
@@ -44,34 +44,24 @@ MooseX::Types::Moose::Overload - Deal with overload, in the overloaded sense ;)
 
 =head1 DESCRIPTION
 
-This module subclasses MooseX::Types::Moose with an ability to transparently handle L<overload>ed objects. All you have to do is use it, and then add C<coerce =E<gt> 1> to the attributes you wish to enable it on. It will then stringify all objects that support the stringifiy method. This works in the style of overload, forcing Moose to just do you want. Something that stringifies to a string should simply work when the attribute isa Str, right‽ Good, thought so.
+This module is like L<MooseX::Types::Moose> except it will transparently handle L<overload>ed objects. All you have to do is use it, and then add C<coerce =E<gt> 1> to the attributes you wish to enable it on. It will then stringify all objects that support the stringifiy method. This works in the style of overload, forcing Moose to just do you want. Something that stringifies to a string should simply work when the attribute isa Str, right‽ Good, thought so.
 
-This modifies the base types in a slightly ugly way and has little to nothing to do with MooseX types. I reserve the right to remove it from cpan, or change its namespace until it is removed from DEV status; because the base types are global, this attaches to B<all> modules that use the base types.
+This modifies the base types in a slightly ugly way -- I hope to fix this in the future. I reserve the right to remove it from cpan, or change its namespace until it is removed from DEV status; because the base types are global, this attaches to B<all> modules that use the base types. Please see the section on "Future Proofing".
 
 This only attaches a coercion to subtypes of "Value", and it only coerces from "Objects", and only executes on Objects that stringify overload.
 
 =head1 SYNOPSIS
 
-	use MooseX::Types::Moose::Overload;
+	use MooseX::Types::Moose::Overload 'Str';
+	use MooseX::Types::Moose::Overload qw/Str Int/;
+	use MooseX::Types::Moose::Overload ':all';
 
 	## Now takes a URI object, or HTTP::Element, and of course a plain string.
-	has 'uri' => ( isa => 'Str', is => 'rw', coerce => 1 );
+	has 'uri' => ( isa => Str, is => 'rw', coerce => 1 );
 
-=head1 TODO
+=head1 Future Proofing (TODO)
 
-These aren't set in stone:
-
-=over 6
-
-=item
-
-Provide an overload for 'has' that simply works.
-
-=item
-
-Look at ammending other flaws in the base types -- for instance, Bool should accept true/false, t/f, yes/no, y/n. And, strings should provide an easy way to be made pretty. This module might evolve into MooseX::Types::PragmaticBaseTypes.
-
-=back
+Currently, this module iterates through all subtypes of "Value" and attaches a coercion with the L<MooseX::Types>1 API. I'm not yet sure if there is a supported method of cloning those base types. Please, do not rely on a naked C<use MooseX::Types::Moose::Overload;> modifying the types exported by L<MooseX::Types::Moose::Overload>. This is an unfortunate side-effect. I really would rather return new fresh types over modify the base types. I didn't realize that the base types were still kinda global.
 
 =head1 AUTHOR
 
