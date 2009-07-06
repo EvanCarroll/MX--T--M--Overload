@@ -6,8 +6,8 @@ license  'perl';
 perl_version '5.008';
 all_from 'lib/MooseX/Types/Moose/Overload.pm';
 
-requires 'Moose';
-requires 'MooseX::Types';
+requires 'Moose' => '0.86';
+requires 'MooseX::Types' => '0.16';
 requires 'overload';
 
 build_requires 'Test::More';
