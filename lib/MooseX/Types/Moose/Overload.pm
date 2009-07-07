@@ -53,9 +53,7 @@ MooseX::Types::Moose::Overload - Deal with overload, in the overloaded sense ;)
 
 This module is like L<MooseX::Types::Moose> except it will transparently handle L<overload>ed objects. All you have to do is use it, and then add C<coerce =E<gt> 1> to the attributes you wish to enable it on. It will then stringify all objects that support the stringifiy method. This works in the style of overload, forcing Moose to just do you want. Something that stringifies to a string should simply work when the attribute isa Str, right‽ Good, thought so.
 
-This modifies the base types in a slightly ugly way -- I hope to fix this in the future. I reserve the right to remove it from cpan, or change its namespace until it is removed from DEV status; because the base types are global, this attaches to B<all> modules that use the base types. Please see the section on "Future Proofing".
-
-This only attaches a coercion to subtypes of "Value", and it only coerces from "Objects", and only executes on Objects that stringify overload.
+This only attaches a coercion to subtypes of "Value", and it only coerces from "Objects", and only executes on Objects that support stringification via overload.
 
 =head1 SYNOPSIS
 
@@ -66,9 +64,13 @@ This only attaches a coercion to subtypes of "Value", and it only coerces from "
 	## Now takes a URI object, or HTTP::Element, and of course a plain string.
 	has 'uri' => ( isa => Str, is => 'rw', coerce => 1 );
 
-=head1 Future Proofing (TODO)
+=head1 CAVEAT
 
-Currently, this module iterates through all subtypes of "Value" and attaches a coercion with the L<MooseX::Types>1 API. I'm not yet sure if there is a supported method of cloning those base types. Please, do not rely on a naked C<use MooseX::Types::Moose::Overload;> modifying the types exported by L<MooseX::Types::Moose::Overload>. This is an unfortunate side-effect. I really would rather return new fresh types over modify the base types. I didn't realize that the base types were still kinda global.
+Overloading in perl is a nasty hack.
+
+There is a subset of overload which is even more of a nasty hack. Unoverloading types which are implimented in obscure hard-to-detect fashion is not supported. I will evaluate patches that support said method for completeness. I do not want to go into detail for fear someone will accidently learn it -- and I don't know of any modules on CPAN that use it. It is very probably a moot case.
+
+As just said, this does not supply an overload for Object. So it does not support stringification that returns references or any other suprememly goofy shit. "$foo"->bar should not be a valid API unless you want to die in the face.
 
 =head1 AUTHOR
 
