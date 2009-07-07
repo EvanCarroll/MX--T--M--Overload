@@ -4,7 +4,7 @@ use warnings;
 
 use overload;
 
-our $VERSION = '0.01_06';
+our $VERSION = '0.01_07';
 
 use Moose::Util::TypeConstraints;
 use MooseX::Types;
