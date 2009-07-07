@@ -16,7 +16,6 @@ META.yml
 README
 t/00-load.t
 t/01-basic_use.t
-t/failing/02-containment.t
-t/failing/03-working_with_mx_types.t
+t/02-containment.t
+t/03-working_with_mx_types.t
 t/pod.t
-test.pl
