@@ -28,7 +28,14 @@ sub unOverload {
 
 my $p = Class::MOP::Package->initialize( __PACKAGE__ );
 for ( @types ) {
-	coerce $p->get_package_symbol( "&$_" )->() , from Object , via \&unOverload;
+	my $copy = $p
+		->get_package_symbol( "&$_" )
+		->()
+		->create_child_type(name=>"Overload capable $_")
+	;
+
+	coerce $copy , from Object , via \&unOverload;
+	$p->add_package_symbol( "&$_", sub{ $copy } );
 }
 
 no MooseX::Types;

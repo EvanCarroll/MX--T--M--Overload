@@ -31,19 +31,17 @@ package main;
 
 my $str = ShittyOverload->new;
 
-TODO: {
-	local $TODO = 'MXTMO Should work with classic Moose';
+{
 	my $NOTmxtmo = InnocentMoose->new;
 	eval { $NOTmxtmo->foo($str) };
-	like ( $@, qr/does not pass the type constraint/, "Classic Moose's attribute to overloaded object" );
+	like ( $@, qr/does not pass the type constraint|Cannot coerce without a type coercion/, "Classic Moose's attribute to overloaded object" );
 	ok ( ! defined $NOTmxtmo->foo , "Attribute remains undefined" );
 }
 
-TODO: {
-	local $TODO = 'MXTMO Should work with MooseX::Types::Moose';
+{
 	my $NOTmxtmo = InnocentMooseXTypes->new;
 	eval { $NOTmxtmo->foo($str) };
-	like ( $@, qr/does not pass the type constraint/, "MooseX::Types object's attribute to overloaded object" );
+	like ( $@, qr/does not pass the type constraint|Cannot coerce without a type coercion/, "MooseX::Types object's attribute to overloaded object" );
 	ok ( ! defined $NOTmxtmo->foo , "Attribute remains undefined" );
 }
 
